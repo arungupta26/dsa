@@ -14,7 +14,7 @@ public class TreeExamples {
 
         TreeNode root = new TreeNode(10);
         root.left = new TreeNode(7);
-        root.left.left = new TreeNode(7);
+        root.left.left = new TreeNode(17);
         root.right = new TreeNode(3);
         root.right.left = new TreeNode(1);
         root.right.right = new TreeNode(2);
@@ -171,8 +171,12 @@ public class TreeExamples {
         System.out.println("------------------------------------------------------------");
 
 
+        System.out.println("------------------------------------------------------------");
+        System.out.println("printing the least common ancestor for tree is ");
+        System.out.println("the LCA  is "+ leastCommonAncestor(root,2,6) );
+        System.out.println();
+        System.out.println("------------------------------------------------------------");
 
-        ;
     }
 
     private static int maxWidth(TreeNode root) {
@@ -584,6 +588,29 @@ public class TreeExamples {
         diamter = Math.max(1+leftHeight+rightHeight, diamter);
 
         return 1+Math.max(leftHeight,rightHeight);
+    }
+
+    public static int leastCommonAncestor(TreeNode root, int n1, int n2){
+
+        if (root == null) return -1;
+
+        if (root.data == n1 || root.data ==n2)
+            return root.data;
+
+        int leftLca = leastCommonAncestor(root.left, n1, n2);
+
+        int rightLca = leastCommonAncestor(root.right,n1,n2);
+
+        if (leftLca!=-1 && rightLca!=-1)
+            return root.data;
+
+        if (leftLca!=-1)
+            return leftLca;
+        else return rightLca;
+
+
+
+
     }
 
 }
