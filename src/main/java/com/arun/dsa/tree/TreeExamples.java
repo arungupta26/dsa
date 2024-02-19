@@ -2,8 +2,6 @@ package com.arun.dsa.tree;
 
 import com.arun.dsa.tree.entity.TreeNode;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class TreeExamples {
@@ -12,17 +10,44 @@ public class TreeExamples {
 
         //create a tree
 
+//        TreeNode root = new TreeNode(10);
+//        root.left = new TreeNode(7);
+//        root.left.left = new TreeNode(17);
+//        root.left.right = new TreeNode(19);
+//        root.right = new TreeNode(3);
+//        root.right.left = new TreeNode(1);
+//        root.right.right = new TreeNode(2);
+//        root.right.left.left = new TreeNode(6);
+
+
         TreeNode root = new TreeNode(10);
-        root.left = new TreeNode(7);
-        root.left.left = new TreeNode(17);
-        root.right = new TreeNode(3);
-        root.right.left = new TreeNode(1);
-        root.right.right = new TreeNode(2);
-        root.right.right.left =new TreeNode(6);
+        root.left = new TreeNode(20);
+        root.right = new TreeNode(30);
+
+        root.left.left = new TreeNode(40);
+        root.left.right = new TreeNode(50);
+
+        root.left.left.left = new TreeNode(80);
+        root.left.left.right = new TreeNode(90);
+
+        root.left.right.left = new TreeNode(100);
+        root.left.right.right = new TreeNode(110);
+
+        root.right.left = new TreeNode(60);
+        root.right.right = new TreeNode(70);
+
+        root.right.left.left = new TreeNode(120);
+
 
         System.out.println("------------------------------------------------------------");
         System.out.println(" Calculating the size of tree ");
         System.out.println(" size of tree is " + size(root));
+        System.out.println("------------------------------------------------------------");
+        System.out.println("------------------------------------------------------------");
+        System.out.println(" Calculating the count of complete binary tree. " +
+                "Complete binary tree a binary tree in which every level, " +
+                "except possibly the last, is completely filled, and all nodes in the last level are filled from left to right");
+        System.out.println(" node Counts For Complate Binary Tree of tree is " + nodeCountsForComplateBinaryTree(root));
         System.out.println("------------------------------------------------------------");
         System.out.println("------------------------------------------------------------");
         System.out.println("Printing the preorder of tree");
@@ -106,12 +131,10 @@ public class TreeExamples {
         System.out.println("------------------------------------------------------------");
 
 
-
         System.out.println("------------------------------------------------------------");
         System.out.println("printing the is balanced tree");
         System.out.println("Is the tree is balance " + isBalanced(root));
         System.out.println("------------------------------------------------------------");
-
 
 
         System.out.println("------------------------------------------------------------");
@@ -135,10 +158,15 @@ public class TreeExamples {
 //        int[] preorder = {10,20,40,50,30,70,80,90};
 
         //Test 3
-        int[] inorder = {7,9,4,2,5,1,3,6,8};
-        int[] preorder = {1,2,4,7,9,5,3,6,8};
+//        int[] inorder = {7, 9, 4, 2, 5, 1, 3, 6, 8};
+//        int[] preorder = {1, 2, 4, 7, 9, 5, 3, 6, 8};
+//
+        //test 4
+        int[] inorder = {80,40,90,20,100,50,110,10,120,60,30,70};
+        int[] preorder = {10,20,40,80,90,50,100,110,30,60,120,70};
 
-        TreeNode treeNode = buildTreeFromPreAndInorder(inorder, preorder, 0, inorder.length-1);
+
+        TreeNode treeNode = buildTreeFromPreAndInorder(inorder, preorder, 0, inorder.length - 1);
         System.out.println(traversePreOrder(treeNode));
 
         System.out.println("------------------------------------------------------------");
@@ -160,28 +188,59 @@ public class TreeExamples {
 
         System.out.println("------------------------------------------------------------");
         System.out.println("printing the diamter of tree is ");
-        System.out.println("the diameter  is "+ diameter(root,"\t"));
+        System.out.println("the diameter  is " + diameter(root, "\t"));
         System.out.println();
         System.out.println("------------------------------------------------------------");
 
         System.out.println("------------------------------------------------------------");
         System.out.println("printing the diamter effificient of tree is ");
-        System.out.println("the diameter  is "+ diameter_efficient(root) +" --> "+diamter);
+        System.out.println("the diameter  is " + diameter_efficient(root, "") + " --> " + diamter);
         System.out.println();
         System.out.println("------------------------------------------------------------");
 
 
         System.out.println("------------------------------------------------------------");
         System.out.println("printing the least common ancestor for tree is ");
-        System.out.println("the LCA  is "+ leastCommonAncestor(root,2,6) );
+        System.out.println("the LCA  is " + leastCommonAncestor(root, 2, 6));
         System.out.println();
         System.out.println("------------------------------------------------------------");
+        System.out.println("------------------------------------------------------------");
+
+        System.out.println("height of tree is " + burnTreeTime(root, 110, new Depth(-1), "") + " and time to burn tree is " + timeToBurnWholeTree);
+        System.out.println("------------------------------------------------------------");
+        System.out.println("-------------------Serialize the tree-----------------------------------------");
+
+        System.out.println(traversePreOrder(root));
+
+        System.out.println(serialize(root));
+        System.out.println("------------------------------------------------------------");
+        System.out.println("------------------Deserialize the tree------------------------------------------");
+
+
+        List<Integer> preOrder = serialize(root);
+
+        System.out.println(traversePreOrder(deserialize(preOrder)));
+        System.out.println("------------------------------------------------------------");
+        System.out.println("-------------------------Non recursive approach-----------------------------------");
+
+        System.out.print("iterativeInOrder :                ");
+        iterativeInOrder(root);
+
+        System.out.print("iterativePreOrder :               ");
+        iterativePreOrder(root);
+
+        System.out.print("iterativeSpaceOptimizePreOrder :  ");
+        iterativeSpaceOptimizePreOrder(root);
+        System.out.println("------------------------------------------------------------");
+
+        topView(root);
+
 
     }
 
     private static int maxWidth(TreeNode root) {
 
-        if (root==null) return 0;
+        if (root == null) return 0;
 
         int maxWidth = 0;
 
@@ -189,21 +248,21 @@ public class TreeExamples {
 
         queue.add(root);
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
 
             int currentSize = queue.size();
 
-            maxWidth = Math.max(currentSize,maxWidth);
+            maxWidth = Math.max(currentSize, maxWidth);
 
             for (int i = 0; i < currentSize; i++) {
 
                 TreeNode currentNode = queue.poll();
 
-                if (currentNode.left!=null)
+                if (currentNode.left != null)
                     queue.add(currentNode.left);
 
 
-                if (currentNode.right!=null)
+                if (currentNode.right != null)
                     queue.add(currentNode.right);
 
             }
@@ -218,7 +277,7 @@ public class TreeExamples {
     private static int isBalancedOptimized(TreeNode root) {
 
 
-        if (root ==null) return 0;
+        if (root == null) return 0;
 
         int leftHeight = isBalancedOptimized(root.left);
 
@@ -226,25 +285,24 @@ public class TreeExamples {
 
         int rightHeight = isBalancedOptimized(root.right);
 
-        if (rightHeight ==-1) return -1;
+        if (rightHeight == -1) return -1;
 
-        if (Math.abs(leftHeight-rightHeight)>1) return -1;
-        else return Math.max(leftHeight,rightHeight)+1;
-
+        if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+        else return Math.max(leftHeight, rightHeight) + 1;
 
 
     }
 
 
-    public static boolean isBalanced(TreeNode node){
+    public static boolean isBalanced(TreeNode node) {
 
-        if (node==null)
+        if (node == null)
             return true;
 
         int leftHeight = height(node.left);
         int rightHeigh = height(node.right);
 
-        if (Math.abs(leftHeight-rightHeigh) >1)
+        if (Math.abs(leftHeight - rightHeigh) > 1)
             return false;
 
         return isBalanced(node.left) && isBalanced(node.right);
@@ -327,7 +385,7 @@ public class TreeExamples {
     public static int height(TreeNode root) {
         if (root == null) return 0;
 
-        if (root.left ==null && root.right==null)
+        if (root.left == null && root.right == null)
             return 1;
 
         return Math.max(height(root.left), height(root.right)) + 1;
@@ -375,6 +433,32 @@ public class TreeExamples {
 
     }
 
+    public static Double nodeCountsForComplateBinaryTree(TreeNode root) {
+
+        if (root == null) return 0d;
+
+        TreeNode currentNode = root;
+        int leftHeight = 1;
+
+        while (currentNode.left != null) {
+            currentNode = currentNode.left;
+            leftHeight++;
+        }
+
+        currentNode = root;
+        int rightHeight = 1;
+        while (currentNode.right != null) {
+            rightHeight++;
+            currentNode = currentNode.right;
+        }
+
+        if (leftHeight == rightHeight)
+            return Math.pow(2, leftHeight) - 1;
+
+        return 1 + nodeCountsForComplateBinaryTree(root.left) + nodeCountsForComplateBinaryTree(root.right);
+
+    }
+
     public static int max(TreeNode root) {
 
         if (root == null) return Integer.MIN_VALUE;
@@ -392,26 +476,27 @@ public class TreeExamples {
     //build tree from pre and in order
 
 
-    public static int preIndex =0;
-    public static TreeNode buildTreeFromPreAndInorder(int[] inorder, int[] preorder, int startIndex, int endIndex){
+    public static int preIndex = 0;
 
-        if (startIndex>endIndex) return null;
+    public static TreeNode buildTreeFromPreAndInorder(int[] inorder, int[] preorder, int startIndex, int endIndex) {
+
+        if (startIndex > endIndex) return null;
 
         TreeNode root = new TreeNode(preorder[preIndex++]);
 
-        int rootFoundAt =0;
+        int rootFoundAt = 0;
 
-        for (int i = 0; i <=endIndex; i++) {
+        for (int i = 0; i <= endIndex; i++) {
 
-            if (inorder[i] == root.data){
+            if (inorder[i] == root.data) {
                 rootFoundAt = i;
                 break;
             }
 
         }
 
-        root.left = buildTreeFromPreAndInorder(inorder,preorder,startIndex, rootFoundAt-1);
-        root.right = buildTreeFromPreAndInorder(inorder,preorder,rootFoundAt+1, endIndex);
+        root.left = buildTreeFromPreAndInorder(inorder, preorder, startIndex, rootFoundAt - 1);
+        root.right = buildTreeFromPreAndInorder(inorder, preorder, rootFoundAt + 1, endIndex);
 
         return root;
 
@@ -436,7 +521,7 @@ public class TreeExamples {
     }
 
     public static void traverseNodes(StringBuilder sb, String padding, String pointer, TreeNode node,
-                              boolean hasRightSibling) {
+                                     boolean hasRightSibling) {
         if (node != null) {
             sb.append("\n");
             sb.append(padding);
@@ -461,7 +546,7 @@ public class TreeExamples {
     }
 
 
-    public static void  printTreeSpiral(TreeNode root){
+    public static void printTreeSpiral(TreeNode root) {
 
         if (root == null)
             return;
@@ -473,7 +558,7 @@ public class TreeExamples {
         boolean reverse = false;
 
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
 
             int count = queue.size(); // this is important to take this size variable different,
             // because we are modifying the queue and size is change, so put the q size in for loop directly
@@ -484,20 +569,20 @@ public class TreeExamples {
 
                 if (reverse)
                     stack.push(curr);
-                else System.out.print(curr.data+" ");
+                else System.out.print(curr.data + " ");
 
-                if (curr.left!=null)
+                if (curr.left != null)
                     queue.add(curr.left);
 
 
-                if (curr.right!=null)
+                if (curr.right != null)
                     queue.add(curr.right);
 
             }
 
             if (reverse)
                 while (!stack.isEmpty())
-                    System.out.print(stack.pop().data+" ");
+                    System.out.print(stack.pop().data + " ");
 
             reverse = !reverse;
 
@@ -505,45 +590,42 @@ public class TreeExamples {
 
     }
 
-    public static void printSpriralTreeEfficient(TreeNode root){
+    public static void printSpriralTreeEfficient(TreeNode root) {
 
         Stack<TreeNode> stack1 = new Stack();
         Stack<TreeNode> stack2 = new Stack();
 
         stack1.add(root);
 
-        while (!(stack1.isEmpty() && stack2.isEmpty() )){
+        while (!(stack1.isEmpty() && stack2.isEmpty())) {
 
 //            System.out.println("s1  "+stack1);
-            while (!stack1.isEmpty()){
+            while (!stack1.isEmpty()) {
 
                 TreeNode cuurent = stack1.pop();
-                System.out.print(cuurent.data+" ");
+                System.out.print(cuurent.data + " ");
 
-                if (cuurent.left!=null)
+                if (cuurent.left != null)
                     stack2.push(cuurent.left);
 
-                if (cuurent.right!=null)
+                if (cuurent.right != null)
                     stack2.push(cuurent.right);
-
 
 
             }
 //            System.out.println("s2==>"+stack2);
 
-            while (!stack2.isEmpty()){
+            while (!stack2.isEmpty()) {
 
                 TreeNode cuurent = stack2.pop();
-                System.out.print(cuurent.data+" ");
+                System.out.print(cuurent.data + " ");
 
-                if (cuurent.right!=null)
+                if (cuurent.right != null)
                     stack1.push(cuurent.right);
 
 
-                if (cuurent.left!=null)
+                if (cuurent.left != null)
                     stack1.push(cuurent.left);
-
-
 
 
             }
@@ -551,66 +633,279 @@ public class TreeExamples {
 
     }
 
-    public static int diameter(TreeNode root, String tab){
+    public static int diameter(TreeNode root, String tab) {
 
 
         long now = System.nanoTime();
         if (root == null)
             return 0;
 
-        if (root.left==null && root.right==null)
+        if (root.left == null && root.right == null)
             return 1;
 
         int leftHeight = height(root.left);
         int rightHeight = height(root.right);
 
-        int currentDiameter = 1+leftHeight+rightHeight;
+        int currentDiameter = 1 + leftHeight + rightHeight;
 
-        tab =tab+"\t";
-        System.out.println(tab+(System.nanoTime() - now) + " nano sec");
+        tab = tab + "\t";
+        System.out.println(tab + (System.nanoTime() - now) + " nano sec");
 
-        return Math.max(currentDiameter , Math.max(diameter(root.left,tab), diameter(root.right,tab)));
+        return Math.max(currentDiameter, Math.max(diameter(root.left, tab), diameter(root.right, tab)));
 
     }
 
     private static int diamter = 0;
-    public static int diameter_efficient(TreeNode root) {
 
+    public static int diameter_efficient(TreeNode root, String tab) {
+
+        long now = System.nanoTime();
+        tab = tab + "\t";
         if (root == null)
             return 0;
+//
+//        if (root.left==null && root.right==null)
+//            return 1;
 
-        if (root.left==null && root.right==null)
-            return 1;
+        int leftHeight = diameter_efficient(root.left, tab);
+        int rightHeight = diameter_efficient(root.right, tab);
 
-        int leftHeight = diameter_efficient(root.left);
-        int rightHeight = diameter_efficient(root.right);
+        diamter = Math.max(1 + leftHeight + rightHeight, diamter);
+        System.out.println(tab + (System.nanoTime() - now) + " nano sec");
 
-        diamter = Math.max(1+leftHeight+rightHeight, diamter);
-
-        return 1+Math.max(leftHeight,rightHeight);
+        return 1 + Math.max(leftHeight, rightHeight);
     }
 
-    public static int leastCommonAncestor(TreeNode root, int n1, int n2){
+    public static int leastCommonAncestor(TreeNode root, int n1, int n2) {
 
         if (root == null) return -1;
 
-        if (root.data == n1 || root.data ==n2)
+        if (root.data == n1 || root.data == n2)
             return root.data;
 
         int leftLca = leastCommonAncestor(root.left, n1, n2);
 
-        int rightLca = leastCommonAncestor(root.right,n1,n2);
+        int rightLca = leastCommonAncestor(root.right, n1, n2);
 
-        if (leftLca!=-1 && rightLca!=-1)
+        if (leftLca != -1 && rightLca != -1)
             return root.data;
 
-        if (leftLca!=-1)
+        if (leftLca != -1)
             return leftLca;
         else return rightLca;
 
+    }
+
+
+    static class Depth {
+        int val;
+
+        Depth(int val) {
+            this.val = val;
+        }
+    }
+
+    static int timeToBurnWholeTree = -1;
+
+    public static int burnTreeTime(TreeNode root, int targetLeafNode, Depth depth, String tab) {
+
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.data == targetLeafNode) {
+            depth.val = 0;
+            return 1;
+        }
+
+        Depth leftDepth = new Depth(-1);
+        Depth rightDepth = new Depth(-1);
+
+        int leftHeight = burnTreeTime(root.left, targetLeafNode, leftDepth, tab + "\t");
+
+        int rightHeight = burnTreeTime(root.right, targetLeafNode, rightDepth, tab + "\t");
+
+        if (leftDepth.val != -1) {
+            depth.val = leftDepth.val + 1;
+            timeToBurnWholeTree = Math.max(timeToBurnWholeTree, leftDepth.val + 1 + rightHeight);
+        } else if (rightDepth.val != -1) {
+            depth.val = rightDepth.val + 1;
+            timeToBurnWholeTree = Math.max(timeToBurnWholeTree, rightDepth.val + 1 + leftHeight);
+        }
+
+        return Math.max(leftHeight, rightHeight) + 1;
+
+    }
+
+    public static List<Integer> serialize(TreeNode root) {
+
+        List<Integer> preOrder = new ArrayList<>();
+
+        if (root == null) {
+            preOrder.add(-1);
+        } else {
+            preOrder.add(root.data);
+            preOrder.addAll(serialize(root.left));
+            preOrder.addAll(serialize(root.right));
+        }
+        return preOrder;
+
+    }
+
+    public static int index = 0;
+
+    public static TreeNode deserialize(List<Integer> preOrder) {
+
+        if (index >= preOrder.size())
+            return null;
+
+        Integer currValue = preOrder.get(index++);
+
+
+        if (currValue == -1)
+            return null;
+
+
+        TreeNode root = new TreeNode(currValue);
+
+        root.left = deserialize(preOrder);
+        root.right = deserialize(preOrder);
+
+        return root;
+
+
+    }
+
+
+    public static void iterativeInOrder(TreeNode root) {
+
+        if (root == null)
+            return;
+
+        Stack<TreeNode> stack = new Stack<>();
+
+        TreeNode current = root;
+
+        while (current != null || !stack.isEmpty()) {
+
+            while (current != null) {
+
+                stack.push(current);
+                current = current.left;
+
+            }
+
+            current = stack.pop();
+            System.out.print(current.data + ",");
+            current = current.right;
+
+
+        }
+
+        System.out.println("\n");
+    }
+
+    public static void iterativePreOrder(TreeNode root) {
+
+        if (root == null) return;
+
+
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+
+            TreeNode current = stack.pop();
+            System.out.print(current.data + ",");
+
+
+            if (current.right != null)
+                stack.push(current.right); //This is important because of LIFO, so first insert right then left, so that left process first
+
+            if (current.left != null)
+                stack.push(current.left);
+
+        }
+        System.out.println("\n");
+    }
+
+    public static void iterativeSpaceOptimizePreOrder(TreeNode root){
+
+        if (root ==null) return;
+
+        Stack<TreeNode> stack =new Stack();
+        stack.push(root);
+        TreeNode current = root;
+
+        while (!stack.isEmpty() ){
+
+            while (current!=null){
+                System.out.print(current.data+ ",");
+
+                if (current.right!=null)
+                    stack.push(current.right);
+
+                current = current.left;
+            }
+
+            current = stack.pop();
+
+        }
+        System.out.println("\n");
+    }
+
+    public static void topView(TreeNode root) {
+
+        Map<Integer, Integer> map = new TreeMap();
+
+        map = createMap(root, 0, map);
+
+        //   System.out.println(map);
+
+        for( Integer key: map.keySet()){
+            System.out.print(map.get(key)+" ");
+        }
+
+    }
+
+    public static Map<Integer,Integer> createMap(TreeNode node, int level, Map<Integer, Integer> map){
+
+        if(node==null)
+            return map;
+
+        Queue<Map<Integer, TreeNode>> queue = new LinkedList<>();
+        queue.add(Map.of(0,node));
+
+        while (!queue.isEmpty()){
+
+            int count = queue.size();
+            for (int i = 0; i < count; i++) {
+
+                Map<Integer,TreeNode> currentNodePair = queue.poll();
+
+                Integer currLevel = currentNodePair.keySet().stream().findFirst().get();
+
+                TreeNode currentTreeNode = currentNodePair.get(currLevel);
+
+                if (!map.containsKey(currLevel)) {
+                    map.put(Integer.valueOf(currLevel), currentTreeNode.data );
+                }
+
+                if (currentTreeNode.left!=null)
+                    queue.add(Map.of(currLevel-1,currentTreeNode.left));
+
+                if (currentTreeNode.right!=null)
+                    queue.add(Map.of(currLevel+1,currentTreeNode.right));
+
+
+            }
+
+
+        }
 
 
 
+        return map;
     }
 
 }
